@@ -1,24 +1,4 @@
-/* ==========================================================
-   SONGO — VERSION 2 : Serveur Node.js  (jeu réseau / Ajax)
-   Fichier : server.js
 
-   PRINCIPE AJAX
-   ──────────────────────────────────────────────────────────
-   · Le serveur maintient l'état unique du jeu en mémoire.
-   · Chaque client envoie des requêtes HTTP (fetch/Ajax) :
-       GET  /api/etat        → lire l'état courant
-       POST /api/rejoindre   → réserver un camp (sud/nord)
-       POST /api/jouer       → soumettre un coup
-       POST /api/reset       → nouvelle partie
-   · Chaque client effectue un polling toutes les 1,5 s
-     pour rafraîchir l'affichage quand c'est l'autre qui joue.
-
-   INSTALLATION
-   ──────────────────────────────────────────────────────────
-     npm install express
-     node server.js
-     Ouvrir http://localhost:3000 dans DEUX onglets/navigateurs
-   ========================================================== */
 
 const express = require('express');
 const path    = require('path');
@@ -27,10 +7,11 @@ const app     = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const PORT = process.env.PORT || 3000;
 
-/* ==========================================================
-   LOGIQUE MÉTIER (identique à la version locale)
-   ========================================================== */
+app.listen(PORT, () => {
+  console.log("Serveur lancé sur port " + PORT);
+});
 
 class Joueur {
   constructor(nom) { this.nom = nom; this.score = 0; }
@@ -46,15 +27,15 @@ class Partie {
     this.plateau        = new Plateau();
     this.joueurSud      = new Joueur("Joueur Sud");
     this.joueurNord     = new Joueur("Joueur Nord");
-    this.joueurCourant  = "sud";   // "sud" ou "nord" — chaîne sérialisable
+    this.joueurCourant  = "sud";   
     this.termine        = false;
     this.fin            = null;
     this.message        = "En attente des deux joueurs…";
-    // Suivi des connexions : null = place libre
+    
     this.session        = { sud: null, nord: null };
   }
 
-  /* ── Helpers ── */
+
   joueurActif()  { return this.joueurCourant === "sud" ? this.joueurSud : this.joueurNord; }
   changerJoueur(){ this.joueurCourant = this.joueurCourant === "sud" ? "nord" : "sud"; }
 
@@ -92,7 +73,7 @@ class Partie {
     }
     if (!casesCapturees.length) return 0;
 
-    // Règle de solidarité
+    
     const copie = [...this.plateau.cases];
     for (const c of casesCapturees) copie[c] = 0;
     let campVide = true;
@@ -145,7 +126,7 @@ class Partie {
     return null;
   }
 
-  /* ── Méthode principale ── */
+  
   jouer(index, camp) {
     if (this.termine)                 return { ok:false, msg:"Partie terminée." };
     if (camp !== this.joueurCourant)  return { ok:false, msg:"Ce n'est pas votre tour !" };
@@ -172,7 +153,7 @@ class Partie {
     return { ok:true, msg:this.message };
   }
 
-  /* ── Sérialisation pour les clients ── */
+
   toJSON() {
     return {
       cases         : this.plateau.cases,
@@ -194,31 +175,15 @@ class Partie {
 }
 
 
-/* ==========================================================
-   ÉTAT GLOBAL DU SERVEUR
-   ========================================================== */
-let partie = new Partie();
 
 
-/* ==========================================================
-   ROUTES API
-   ========================================================== */
 
-/**
- * GET /api/etat
- * Utilisé par le polling Ajax des clients.
- * Retourne l'état complet du jeu en JSON.
- */
+
 app.get('/api/etat', (req, res) => {
   res.json(partie.toJSON());
 });
 
-/**
- * POST /api/rejoindre
- * Body : { camp: "sud"|"nord", nom: "Prénom" }
- * Réserve un camp pour un joueur.
- * Retourne : { ok, camp, nom }
- */
+
 app.post('/api/rejoindre', (req, res) => {
   const { camp, nom } = req.body;
   if (camp !== "sud" && camp !== "nord")
@@ -233,7 +198,7 @@ app.post('/api/rejoindre', (req, res) => {
   if (camp === "sud")  partie.joueurSud.nom  = nomJoueur;
   if (camp === "nord") partie.joueurNord.nom = nomJoueur;
 
-  // Mettre à jour le message quand les deux joueurs sont là
+  
   if (partie.session.sud && partie.session.nord) {
     partie.message = `Partie lancée ! Tour de ${partie.joueurSud.nom}.`;
   } else {
@@ -243,12 +208,7 @@ app.post('/api/rejoindre', (req, res) => {
   res.json({ ok:true, camp, nom:nomJoueur });
 });
 
-/**
- * POST /api/jouer
- * Body : { index: number, camp: "sud"|"nord" }
- * Exécute le coup du joueur.
- * Retourne : { ok, msg?, fin?, etat }
- */
+
 app.post('/api/jouer', (req, res) => {
   const { index, camp } = req.body;
   if (typeof index !== 'number' || (camp !== 'sud' && camp !== 'nord'))
@@ -258,19 +218,12 @@ app.post('/api/jouer', (req, res) => {
   res.json({ ...result, etat: partie.toJSON() });
 });
 
-/**
- * POST /api/reset
- * Crée une nouvelle partie (remet les sessions à null aussi).
- */
+
 app.post('/api/reset', (req, res) => {
   partie = new Partie();
   res.json({ ok:true, etat: partie.toJSON() });
 });
 
-
-/* ==========================================================
-   DÉMARRAGE
-   ========================================================== */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`\n🌱  Songo Réseau — serveur démarré`);
