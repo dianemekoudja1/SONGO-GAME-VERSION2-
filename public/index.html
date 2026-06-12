@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Songo — Version Réseau</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+
+  <div class="player-bar">
+    <div class="player-label" id="lbl-nord">JOUEUR NORD</div>
+    <div class="title">SONGO</div>
+    <div class="player-label" id="lbl-sud">JOUEUR SUD</div>
+  </div>
+
+  <!-- ── Écran de connexion (affiché tant que le camp n'est pas choisi) ── -->
+  <div id="screen-join">
+    <div class="waiting-banner">
+      <strong>Choisissez votre camp pour rejoindre la partie</strong><br>
+      <small>Ouvrez cette page dans un second onglet/navigateur pour l'adversaire</small>
+    </div>
+    <div style="margin-top:12px;">
+      <input id="input-nom" type="text" placeholder="Votre prénom…" maxlength="20"
+        style="width:100%;padding:10px 14px;border-radius:6px;border:2px solid #7A4A28;
+               background:#1A0F08;color:#F5ECD7;font-size:14px;outline:none;
+               margin-bottom:12px;">
+    </div>
+    <div class="camp-select">
+      <button class="camp-btn" id="btn-join-sud"  onclick="rejoindre('sud')">⬇ Camp Sud</button>
+      <button class="camp-btn" id="btn-join-nord" onclick="rejoindre('nord')">⬆ Camp Nord</button>
+    </div>
+  </div>
+
+  <!-- ── Plateau (masqué tant que le joueur n'a pas rejoint) ── -->
+  <div id="screen-game" style="display:none; width:100%;">
+
+    <div id="waiting-adv" class="waiting-banner" style="display:none;">
+      ⏳ En attente de votre adversaire…
+    </div>
+
+    <div class="board">
+      <div class="row nord" id="row-nord"></div>
+      <div class="divider"></div>
+      <div class="row sud"  id="row-sud"></div>
+    </div>
+
+    <div class="scores-row">
+      <div class="score-box">
+        <div class="score-num" id="score-nord">0</div>
+        <div class="score-lbl" id="score-lbl-nord">JOUEUR NORD</div>
+      </div>
+      <div class="total-info" id="total-info">70 graines</div>
+      <div class="score-box">
+        <div class="score-num" id="score-sud">0</div>
+        <div class="score-lbl" id="score-lbl-sud">JOUEUR SUD</div>
+      </div>
+    </div>
+
+    <div id="status">Connexion en cours…</div>
+    <button id="btn-reset" onclick="resetGame()">Nouvelle partie</button>
+
+  </div><!-- /screen-game -->
+
+  <!-- ── Écran de victoire ── -->
+  <div id="victory-overlay">
+    <div class="victory-card">
+      <div class="victory-icon" id="v-icon">🏆</div>
+      <div class="victory-tag"  id="v-tag">Victoire</div>
+      <div class="victory-title" id="v-title">— gagne !</div>
+      <div class="victory-divider"></div>
+      <div class="victory-scores">
+        <div class="vs-box" id="vs-nord">
+          <div class="vs-num"  id="v-score-nord">0</div>
+          <div class="vs-name" id="v-name-nord">JOUEUR NORD</div>
+        </div>
+        <div class="vs-sep">vs</div>
+        <div class="vs-box" id="vs-sud">
+          <div class="vs-num"  id="v-score-sud">0</div>
+          <div class="vs-name" id="v-name-sud">JOUEUR SUD</div>
+        </div>
+      </div>
+      <div class="victory-subtitle" id="v-reason"></div>
+      <div class="victory-divider"></div>
+      <button id="btn-play-again" onclick="resetGame()">Rejouer</button>
+    </div>
+  </div>
+
+</div><!-- /app -->
+<script src="client.js"></script>
+</body>
+</html>

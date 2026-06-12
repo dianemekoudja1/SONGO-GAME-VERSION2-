@@ -1,0 +1,12 @@
+{
+  "name": "songo-reseau",
+  "version": "1.0.0",
+  "description": "Jeu de Songo - Version réseau avec Ajax et Node.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

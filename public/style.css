@@ -1,0 +1,248 @@
+/* =====================================================
+   SONGO GAME — Feuille de style (Version 1 & 2)
+   ===================================================== */
+
+:root {
+  --wood-dark : #1A0F08;
+  --wood-mid  : #3D2010;
+  --wood-rim  : #7A4A28;
+  --wood-pale : #A87040;
+  --seed      : #E8C97A;
+  --accent    : #C0522B;
+  --accent2   : #E8733A;
+  --ivory     : #F5ECD7;
+  --ivory-dim : #B0A090;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', serif;
+  background: var(--wood-dark);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ── Conteneur principal ── */
+#app {
+  width: 96%;
+  max-width: 820px;
+  background: linear-gradient(160deg, #2C1A0E 60%, #1A0C06);
+  border-radius: 28px;
+  padding: 32px 28px 28px;
+  border: 3px solid var(--wood-rim);
+  box-shadow: 0 0 60px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  position: relative;
+}
+
+/* ── Titre ── */
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 10px;
+  color: var(--seed);
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(232,201,122,.25);
+}
+
+/* ── Barre joueurs ── */
+.player-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.player-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: 4px;
+  transition: all .3s;
+}
+.player-label.active   { background: var(--accent);   color: var(--ivory);    box-shadow: 0 0 12px rgba(192,82,43,.4); }
+.player-label.inactive { background: var(--wood-mid); color: var(--ivory-dim); }
+
+/* ── Plateau ── */
+.board {
+  background: var(--wood-mid);
+  border-radius: 36px;
+  padding: 20px;
+  border: 36px solid var(--wood-pale);
+  box-shadow: inset 0 0 24px rgba(0,0,0,.4);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.row      { display: flex; gap: 6px; justify-content: center; }
+.row.nord { flex-direction: row-reverse; }
+
+/* ── Cases ── */
+.cell {
+  width: 74px; height: 74px;
+  border-radius: 6px;
+  background: var(--wood-dark);
+  border: 2px solid var(--wood-rim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: border-color .15s, transform .1s, box-shadow .15s;
+  user-select: none;
+}
+.cell:hover:not(.disabled) {
+  border-color: var(--seed);
+  transform: scale(1.07);
+  box-shadow: 0 0 14px rgba(232,201,122,.2);
+}
+.cell.disabled { cursor: not-allowed; opacity: .35; }
+
+/* ── Graines ── */
+.seeds-dots {
+  display: flex; flex-wrap: wrap; gap: 3px;
+  justify-content: center; max-width: 50px;
+}
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--seed);
+  box-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+.seeds-num { font-size: 22px; font-weight: 700; color: var(--seed); }
+.divider   { height: 2px; background: var(--wood-rim); border-radius: 1px; margin: 0 4px; }
+
+/* ── Scores ── */
+.scores-row {
+  display: flex; justify-content: space-between;
+  align-items: center; width: 100%;
+}
+.score-box {
+  background: var(--wood-mid);
+  border-radius: 10px;
+  padding: 10px 22px;
+  margin: 20px;
+  text-align: center;
+  border: 1px solid var(--wood-rim);
+  min-width: 90px;
+  gap: 10px;
+}
+.score-num { font-size: 40px; font-weight: 700; color: var(--seed); line-height: 1; }
+.score-lbl { font-size: 10px; color: var(--ivory-dim); letter-spacing: .12em; text-transform: uppercase; margin-top: 3px; }
+.total-info { font-size: 12px; color: var(--ivory-dim); letter-spacing: .08em; }
+
+/* ── Status ── */
+#status {
+  font-size: 13px; color: var(--ivory-dim);
+  text-align: center; letter-spacing: .05em;
+  min-height: 20px; font-family: monospace;
+}
+#status.ok  { color: var(--seed); }
+#status.err { color: #E07050; }
+#status.win { color: var(--seed); font-weight: 700; }
+
+/* ── Bouton reset ── */
+#btn-reset {
+  background: var(--ivory);
+  border: 2px solid var(--wood-rim);
+  color: #3D2010;
+  padding: 11px 32px;
+  border-radius: 6px;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: all .15s;
+}
+#btn-reset:hover { background: var(--accent2); color: var(--ivory); transform: scale(1.04); }
+
+/* ── Overlay victoire ── */
+#victory-overlay {
+  display: none;
+  position: absolute; inset: 0;
+  background: rgba(10,5,2,.82);
+  border-radius: 28px;
+  z-index: 100;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+#victory-overlay.show { display: flex; animation: fadeIn .4s ease; }
+
+@keyframes fadeIn  { from { opacity: 0; }               to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes shimmer { 0%,100% { opacity: 1; } 50% { opacity: .7; } }
+
+.victory-card {
+  background: linear-gradient(145deg, #2C1A0E, #1A0C06);
+  border: 2px solid var(--wood-rim);
+  border-radius: 20px;
+  padding: 40px 50px;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  max-width: 380px; width: 90%;
+  box-shadow: 0 0 50px rgba(0,0,0,.8);
+  animation: slideUp .45s cubic-bezier(.22,1,.36,1);
+}
+.victory-icon     { font-size: 52px; animation: shimmer 2s infinite; line-height: 1; }
+.victory-tag      { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent2); font-family: monospace; }
+.victory-title    { font-size: 30px; font-weight: 700; color: var(--seed); letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 0 20px rgba(232,201,122,.3); }
+.victory-subtitle { font-size: 13px; color: var(--ivory-dim); font-family: monospace; }
+.victory-divider  { width: 60px; height: 1px; background: var(--wood-rim); }
+
+.victory-scores   { display: flex; gap: 24px; align-items: center; margin: 4px 0; }
+.vs-box           { text-align: center; }
+.vs-box .vs-num   { font-size: 36px; font-weight: 700; color: var(--seed); }
+.vs-box.winner .vs-num { color: var(--accent2); font-size: 44px; }
+.vs-box .vs-name  { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--ivory-dim); font-family: monospace; margin-top: 2px; }
+.vs-sep           { font-size: 20px; color: var(--wood-rim); font-weight: 700; }
+
+#btn-play-again {
+  background: var(--accent); border: none; color: var(--ivory);
+  padding: 12px 36px; border-radius: 6px;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  letter-spacing: .15em; text-transform: uppercase;
+  transition: all .15s; margin-top: 4px;
+}
+#btn-play-again:hover { background: var(--accent2); transform: scale(1.05); }
+
+/* ── Bandeau "en attente" (version réseau uniquement) ── */
+.waiting-banner {
+  background: var(--wood-mid);
+  border: 1px solid var(--wood-rim);
+  border-radius: 8px;
+  padding: 12px 24px;
+  color: var(--ivory-dim);
+  font-size: 13px;
+  font-family: monospace;
+  letter-spacing: .06em;
+  text-align: center;
+  margin: 20px;
+}
+.waiting-banner strong { color: var(--seed); }
+
+/* ── Sélection du camp (version réseau) ── */
+.camp-select {
+  display: flex;
+  gap: 16px;
+}
+.camp-btn {
+  flex: 1;
+  padding: 14px 0;
+  border-radius: 8px;
+  border: 2px solid var(--wood-rim);
+  background: var(--wood-mid);
+  color: var(--ivory);
+  font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  transition: all .2s;
+}
+.camp-btn:hover:not(:disabled) { border-color: var(--seed); background: var(--accent); }
+.camp-btn:disabled { opacity: .4; cursor: not-allowed; }
