@@ -1,8 +1,7 @@
-
-
 const express = require('express');
-const path    = require('path');
-const app     = express();
+const path = require('path');
+
+const app = express();
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -198,7 +197,7 @@ app.post('/api/rejoindre', (req, res) => {
   if (camp === "sud")  partie.joueurSud.nom  = nomJoueur;
   if (camp === "nord") partie.joueurNord.nom = nomJoueur;
 
-  
+  // Mettre à jour le message quand les deux joueurs sont là
   if (partie.session.sud && partie.session.nord) {
     partie.message = `Partie lancée ! Tour de ${partie.joueurSud.nom}.`;
   } else {
@@ -224,7 +223,6 @@ app.post('/api/reset', (req, res) => {
   res.json({ ok:true, etat: partie.toJSON() });
 });
 
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`\n🌱  Songo Réseau — serveur démarré`);
   console.log(`    http://localhost:${PORT}`);
